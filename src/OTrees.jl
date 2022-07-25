@@ -20,6 +20,9 @@ export nnode, nview
 
 include("core_types.jl")
 
+include("branches.jl")
+export brlength, brlength!, brlabel, brlabel!
+
 include("relatives.jl")
 export neighbours, children, getview
 
@@ -28,5 +31,8 @@ export link!, linkfirst!, unlink!, swap!
 
 include("construct_trees.jl")
 export create_tree, symmetric_tree
+
+include("write_newick.jl")
+export newick, print_newick
 
 end

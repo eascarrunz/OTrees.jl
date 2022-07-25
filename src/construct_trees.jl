@@ -1,6 +1,6 @@
-function _add_node_with_stem!(treedata, i)
+function _add_node_with_stem!(treedata, i, labels)
     j = 2 * i - 3    # Index of the first view of the stem
-    o = ONode(treedata.ND, i, nothing)
+    o = ONode(treedata.ND, i, labels[i])
     br = Branch{treedata.BD}()
     p = NodeView(j, o)
     c = NodeView(j + 1, nothing)
@@ -30,7 +30,7 @@ Create a tree object with unlinked nodes.
 
 The number of nodes can be given as `N`. It is also possible to give the number `n` of outer nodes, or a taxon set with `n` taxa, and it will create the number of inner nodes appropriate for an unrooted binary tree.
 """
-function create_tree(dtypes::NTuple{3,Type}, N)
+function create_tree(dtypes::NTuple{3,Type}, N, labels = string.(1:N))
     TD, ND, BD = dtypes # Tree data type, node data type, branch data type
     nv = nview(N=N)
 
@@ -45,9 +45,9 @@ function create_tree(dtypes::NTuple{3,Type}, N)
     So for a node of index `i`, the view indices are `2 * i - 2` and `2 * i - 1`
     See `_add_node_with_stem!`
     =#
-    nodes[1] = ONode(ND, 1, nothing)
+    nodes[1] = ONode(ND, 1, first(labels))
     for i in 2:N
-        _add_node_with_stem!(treedata, i)
+        _add_node_with_stem!(treedata, i, labels)
     end
 
     tree = OTree{TD}(nodes[1], nodes, nodeviews)
@@ -57,19 +57,6 @@ end
 
 create_tree(N) = create_tree(DEFAULT_DTYPES, N)
 
-# function _bifurcate!(tree, p, i, r)
-#     if r > 0
-#         c = tree.nodes[i]
-#         link!(p, c)
-#         i = _bifurcate!(tree, c, i + 1, r - 1) + 1
-        
-#         c = tree.nodes[i]
-#         link!(p, c)
-#         i = _bifurcate!(tree, c, i + 1, r - 1)
-#     end
-
-#     return i
-# end
 
 function _bifurcate!(tree, p, ic, r)
     if r > 0

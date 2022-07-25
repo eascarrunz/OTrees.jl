@@ -62,6 +62,17 @@ children(tree.nodeviews[2]) |> collect
 #  NodeView #5 assigned to node #4
 ```
 
+The topology of the tree can also be shown as a Newick string
+
+```julia
+newick(tree; brlengths = false)
+# "(2,3,(5,6)4)1;"
+
+# Do the same with a bigger tree
+newick(symmetric_tree(4); brlengths = false)
+# "(((4,5)3,(7,8)6)2,((11,12)10,(14,15)13)9,(((19,20)18,(22,23)21)17,((26,27)25,(29,30)28)24)16)1;"
+```
+
 ## References
 
 Felsenstein. Inferring Phylogenies. 1st ed. Sunderland, Massachusetts, USA: Sinauer Associates, Inc, 2004.

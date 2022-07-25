@@ -62,15 +62,28 @@ children(tree.nodeviews[2]) |> collect
 #  NodeView #5 assigned to node #4
 ```
 
-The topology of the tree can also be shown as a Newick string
+The topology of the tree can also be shown as a Newick string.
 
 ```julia
 newick(tree; brlengths = false)
 # "(2,3,(5,6)4)1;"
+```
 
-# Do the same with a bigger tree
-newick(symmetric_tree(4); brlengths = false)
-# "(((4,5)3,(7,8)6)2,((11,12)10,(14,15)13)9,(((19,20)18,(22,23)21)17,((26,27)25,(29,30)28)24)16)1;"
+Any node can be used as the root, even an outer node.
+
+```julia
+newick(tree.nodes[3], brlengths = false)
+# "(((5,6)4,2)1)3;"
+```
+
+A node view will produce the Newick string of the corresponding subtree:
+
+```julia
+newick(tree.nodeviews[6]; brlengths = false)
+#"(2,3)1;"
+
+newick(tree.nodeviews[5]; brlengths = false)
+#"(5,6)4;"
 ```
 
 ## References

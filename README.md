@@ -13,7 +13,12 @@ This kind of data structure is useful for phylogenetic maximum likelihood algori
 
 ![Diagram](readme.png)
 
-On the left there is a simple unrooted tree with 4 *outer* nodes and 2 *inner* nodes, all nodes numbered from 1 to 6. On the right there is a diagram of the `OTree` data structure that represents the same tree.
+On the left there is a simple unrooted tree with 4 *outer* nodes and 2 *inner* nodes, all nodes numbered from 1 to 6. On the right there is a diagram of the `OTree` data structure that represents the same tree. That structure can be created with a function that grows symmetric trees.
+
+```julia
+# The argument passed to this function is the "radius" of the tree (it needs a more precise definition)
+tree = symmetric_tree(2)
+```
 
 The white circles are `ONodes`, which represent the nodes of the tree and are numbered in the same way.
 
@@ -23,16 +28,39 @@ Complicated stuff, more explanations forthcoming... This table should help.
 
 | `NodeView` | Neighbour views | Children views |
 |------------|-----------------|----------------|
-| 1          | 2               | 2              |
+| 1          | 2               | -              |
 | 2          | 1, 3, 5         | 3, 5           |
-| 3          | 4               | 4              |
+| 3          | 4               | -              |
 | 4          | 3, 5, 1         | 5, 1           |
 | 5          | 6, 9, 7         | 9, 7           |
 | 6          | 5, 1, 3         | 1, 3           |
-| 7          | 8               | 8              |
+| 7          | 8               | -              |
 | 8          | 7, 6, 10        | 6, 10          |
-| 9          | 10              | 10             |
+| 9          | 10              | -             |
 | 10         | 9, 7, 5         | 7, 5           |
+
+
+The `NodeViews` of the `tree` created above are contained in the vector `tree.nodeviews`. The relationships shown in the table can be checked with two functions that return iterators of neighbours or children.
+
+```julia
+neighbours(tree.nodeviews[1]) |> collect
+# 1-element Vector{OTrees.NodeView}:
+# NodeView #4 assigned to node #1
+
+children(tree.nodeviews[1]) |> collect
+# OTrees.NodeView[] (empty vector)
+
+neighbours(tree.nodeviews[2]) |> collect
+# 3-element Vector{OTrees.NodeView}:
+#  NodeView #1 assigned to node #2
+#  NodeView #3 assigned to node #3
+#  NodeView #5 assigned to node #4
+
+children(tree.nodeviews[2]) |> collect
+# 2-element Vector{OTrees.NodeView}:
+#  NodeView #3 assigned to node #3
+#  NodeView #5 assigned to node #4
+```
 
 ## References
 

@@ -34,8 +34,10 @@ mutable struct ONode{D} <: AbstractNode
     lastview::Union{Nothing,NodeView}
     data::D
 
-    ONode(D, id, taxon=nothing) =
+    ONode(D, id, taxon::Union{Nothing,Taxon} = nothing) =
         new{D}(id, taxon, isnothing(taxon) ? "" : taxon.name, nothing)
+    ONode(D, id, label::String) =
+        new{D}(id, nothing, label, nothing)
 end
 
 

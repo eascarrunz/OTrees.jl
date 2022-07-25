@@ -37,7 +37,7 @@ brlabel(o1::ONode, o2::ONode) = brlabel(getview(o1, o2))
 
 Set the label of a branch between two nodes, or the branch of a node view.
 """
-function brlength!(nv::NodeView, x)
+function brlabel(nv::NodeView, x)
     nv.branch.label = x
 
     return x

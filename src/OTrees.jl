@@ -33,6 +33,6 @@ include("construct_trees.jl")
 export create_tree, symmetric_tree
 
 include("write_newick.jl")
-export newick, print_newick
+export write, newick_string
 
 end

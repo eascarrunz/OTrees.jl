@@ -58,3 +58,62 @@ end
 
 
 Base.show(io::IO, tree::OTree) = print(io, "OTree with $(length(tree.nodes)) nodes")
+
+
+function Base.propertynames(::NodeView, private=false)
+    return private ? (
+        :branch,
+        :brlength,
+        :data,
+        :id,
+        :label,
+        :next,
+        :node,
+        :viewid,
+        :taxon,
+        :out
+    ) : (
+        :branch,
+        :brlength,
+        :data,
+        :id,
+        :label,
+        :next,
+        :node,
+        :viewid,
+        :taxon,
+    )
+end
+
+
+function Base.setproperty!(nodeview::NodeView, property::Symbol, value)
+    # `out` and `next` have public getters, but are not intended to have a public setter
+
+    property == :branch     && return setfield!(nodeview, :branch, value)
+    property == :brlength   && return setfield!(nodeview.branch, :length, value)
+    property == :data       && return setfield!(nodeview.node, :data, value)
+    property == :id         && return setfield!(nodeview.node, :id, value)
+    property == :label      && return setfield!(nodeview.node, :label, value)
+    property == :node       && return setfield!(nodeview, :node, value)
+    property == :viewid     && return setfield!(nodeview, :id, value)
+    property == :out        && return setfield!(nodeview, :out, value)
+    property == :taxon      && return setfield!(nodeview.node, :taxon, value)
+
+    throw(error("type `NodeView` has no public property `$(property)`"))
+end
+
+
+function Base.getproperty(nodeview::NodeView, property::Symbol)
+    property == :branch     && return getfield(nodeview, :branch)
+    property == :brlength   && return getfield(nodeview.branch, :length)
+    property == :data       && return getfield(nodeview.node, :data)
+    property == :id         && return getfield(nodeview.node, :id)
+    property == :label      && return getfield(nodeview.node, :label)
+    property == :next       && return getfield(nodeview, :next)
+    property == :node       && return getfield(nodeview, :node)
+    property == :out        && return getfield(nodeview, :out)
+    property == :taxon      && return getfield(nodeview.node, :taxon)
+    property == :viewid     && return getfield(nodeview, :id)
+
+    throw(error("type `NodeView` has no public property `$(property)`"))
+end

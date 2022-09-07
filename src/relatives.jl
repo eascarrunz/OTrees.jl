@@ -10,9 +10,9 @@ struct NodeViewIterator{T}
 end
   
 Base.iterate(::NodeViewIterator{Nothing}) = nothing
-Base.iterate(iter::NodeViewIterator{NodeView{ONode}}) = (iter.first.out, iter.first.next)
+Base.iterate(iter::NodeViewIterator{NodeView{ONode}}) = (iter.first.out, getfield(iter.first, :next))
 Base.iterate(iter::NodeViewIterator{NodeView{ONode}}, state) =
-    state ≢ iter.stopbefore ? (state.out, state.next) : nothing
+    state ≢ iter.stopbefore ? (state.out, getfield(state, :next)) : nothing
 
 Base.IteratorSize(::NodeViewIterator) = Base.HasLength()
 Base.IteratorEltype(::NodeViewIterator) = Base.HasEltype()
@@ -65,10 +65,12 @@ Base.last(iter::NodeIterator) = last(iter.viewiter).node
 Return the stem of the last child of node view `p`.
 """
 function lastview(p::NodeView)
-  s = p.next
-  isnothing(s) && return s
-  while s.next ≠ p
-    s = s.next
+#   s = p.next
+    s = getfield(p, :next)
+  isnothing(s) && return nothing
+#   while s.next ≠ p
+  while getfield(s, :next) ≠ p
+    s = getfield(s, :next)
   end
 
   return s
@@ -76,7 +78,7 @@ end
 
 
 lastview(o::ONode) = isnothing(o.lastview) ? nothing : o.lastview
-firstview(o::ONode) = isnothing(lastview(o)) ? nothing : lastview(o).next
+firstview(o::ONode) = isnothing(lastview(o)) ? nothing : getfield(lastview(o), :next)
 
 
 """
@@ -97,14 +99,15 @@ neighbours(o::ONode) = NodeIterator(
 Return an iterator of the children node views of node view `v`.
 """
 children(p::NodeView) =
-    p.next ≢ p ? NodeViewIterator(p.next, p) : NodeViewIterator(nothing, nothing)
+    # p.next ≢ p ? NodeViewIterator(p.next, p) : NodeViewIterator(nothing, nothing)
+    getfield(p, :next) ≢ p ? NodeViewIterator(getfield(p, :next), p) : NodeViewIterator(nothing, nothing)
 
 
 """
 Get the node view from node `op` to node `oc`. Throws an error if the node view does not exist.
 """
 function getview(op, oc)
-    for v in neighbours(op.lastview.next)
+    for v in neighbours(getfield(op.lastview, :next))
         v.out.node ≡ oc && return v
     end
 

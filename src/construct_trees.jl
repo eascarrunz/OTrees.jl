@@ -8,14 +8,18 @@ function _add_node_with_stem!(treedata, i, labels)
     o.lastview = p
 
     p.node = o
-    p.next = p
+    # p.next = p
+    setfield!(p, :next, p)
     p.out = c
-    p.branch = br
+    # p.branch = br
+    setfield!(p, :branch, br)
 
     c.node = nothing
-    c.next = c
+    # c.next = c
+    setfield!(c, :next, c)
     c.out = p
-    c.branch = br
+    # c.branch = br
+    setfield!(c, :branch, br)
 
     treedata.nodes[i] = o
     treedata.nodeviews[j] = p
@@ -45,12 +49,12 @@ function create_tree(dtypes::NTuple{3,Type}, N, labels = string.(1:N))
     So for a node of index `i`, the view indices are `2 * i - 2` and `2 * i - 1`
     See `_add_node_with_stem!`
     =#
-    nodes[1] = ONode(ND, 1, first(labels))
+    nodes[begin] = ONode(ND, 1, first(labels))
     for i in 2:N
         _add_node_with_stem!(treedata, i, labels)
     end
 
-    tree = OTree{TD}(nodes[1], nodes, nodeviews)
+    tree = OTree{TD}(nodes[begin], nodes, nodeviews)
 
     return tree
 end
@@ -94,8 +98,26 @@ end
 symmetric_tree(r::Number) = symmetric_tree(DEFAULT_DTYPES, r)
 
 
+function preprint(p::NodeView)
+    println("Node #$(p.id) $(p.label): NodeView $(p.viewid)")
+
+    for c in children(p)
+        preprint(c)
+    end
+
+    return nothing
+end
 
 
+function preprint(tree::OTree)
+    println("Node #$(tree.anchor.id) $(tree.anchor.label)")
+    
+    for c in neighbours(tree.anchor.lastview.next)
+        preprint(c)
+    end
+
+    return nothing
+end
 
 
 function preprint(p)

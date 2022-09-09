@@ -110,3 +110,61 @@ end
         @test all(node_order(tree.anchor) .== 1:N)
     end
 end
+
+
+@testset "Wikipedia reference strings" begin
+    test_strings = (
+        "(,,(,));",                                         # no nodes are named
+        "(A,B,(C,D));",                                     # leaf nodes are named
+        "(A,B,(C,D)E)F;",                                   # all nodes are named
+        "(:0.1,:0.2,(:0.3,:0.4):0.5);",                     # all but root node have a distance to parent
+        "(A:0.1,B:0.2,(C:0.3,D:0.4):0.5);",                 # distances and leaf names (popular)
+        "(A:0.1,B:0.2,(C:0.3,D:0.4)E:0.5)F;",               # distances and all names
+        "((B:0.2,(C:0.3,D:0.4)E:0.5)F:0.1)A;"               # a tree rooted on a leaf node (rare))
+    )
+
+
+    @testset "One tree per string" begin
+        for test_string in test_strings
+            tree = OTrees.read(test_string, OTree)
+            @test test_string == OTrees.write(tree)
+        end
+    end
+
+
+    @testset "Multiple trees in one string" begin
+        trees = OTrees.read(join(test_strings))
+        for (tree, test_string) in zip(trees, test_strings)
+            @test test_string == OTrees.write(tree)
+        end
+    end
+
+
+    # @testset "Root with branch length" begin
+    #     test_string = "(A:0.1,B:0.2,(C:0.3,D:0.4)E:0.5)F:0.1;"
+
+    #     @test_throws ErrorException OTrees.read(test_string)
+    # end
+end
+
+
+@testset "Complex labels" begin
+    test_strings = (
+        # singly-quoted labels
+        "('A':0.1,'B':0.2,('C':0.3,'D':0.4)'E':0.5)'F';",
+
+        # doubly-quoted labels
+        """("A":0.1,"B":0.2,("C":0.3,"D":0.4)"E":0.5)"F";""",
+        
+        # mix of label quoting styles
+        """('A':0.1,"B":0.2,('C':0.3,D:0.4)E:0.5)"F";""",
+        
+        # with white space
+        """("A 1":0.1,"B 2":0.2,("C 3":0.3,"D 4":0.4)"E 5":0.5)"F 6";""",
+
+        # with parens, not necessarily matched
+        """("A (1)":0.1,"B (2)":0.2,("C (3)":0.3,"D (4)":0.4)"E (5":0.5)"F 6)";""",
+    )
+
+    #TODO: Implement complex label tests for Newick functions
+end

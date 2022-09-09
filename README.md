@@ -65,24 +65,24 @@ children(tree.nodeviews[2]) |> collect
 The topology of the tree can also be shown as a Newick string.
 
 ```julia
-newick(tree; brlengths = false)
+OTrees.write(tree)
 # "(2,3,(5,6)4)1;"
 ```
 
 Any node can be used as the root, even an outer node.
 
 ```julia
-newick(tree.nodes[3], brlengths = false)
+OTrees.write(tree.nodes[3])
 # "(((5,6)4,2)1)3;"
 ```
 
 A node view will produce the Newick string of the corresponding subtree:
 
 ```julia
-newick(tree.nodeviews[6]; brlengths = false)
+OTrees.write(tree.nodeviews[6])
 #"(2,3)1;"
 
-newick(tree.nodeviews[5]; brlengths = false)
+OTrees.write(tree.nodeviews[5])
 #"(5,6)4;"
 ```
 

@@ -1,4 +1,4 @@
-positive_part(x) = (x ≥ 0) * x
+positive_part(x) = (0 <= x) * x
 
 
 """

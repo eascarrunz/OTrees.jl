@@ -19,6 +19,7 @@ include("numbers.jl")
 export nnode, nview
 
 include("core_types.jl")
+export OTree
 
 include("branches.jl")
 export brlength, brlength!, brlabel, brlabel!
@@ -33,6 +34,6 @@ include("construct_trees.jl")
 export create_tree, symmetric_tree
 
 include("write_newick.jl")
-export write, newick_string
+include("read_newick.jl")
 
 end

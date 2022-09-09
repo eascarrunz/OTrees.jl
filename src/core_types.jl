@@ -1,11 +1,11 @@
 # struct definitions, constructor methods, and show methods of core types
 
 mutable struct Branch{D}
-    length::Float64
+    length::Union{Nothing,Float64}
     label::String
     data::D
 
-    Branch{D}(length=NaN, label="") where {D} = new{D}(length, label)
+    Branch{D}(length=nothing, label="") where {D} = new{D}(length, label)
 end
 
 
